@@ -231,50 +231,19 @@ const Index = () => {
               </div>
             </div>
 
-            {/* Contact Form */}
+            {/* Monday.com Form */}
             <div className="bg-white/90 backdrop-blur-sm p-8 rounded-lg shadow-xl">
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <Input
-                    placeholder="Họ và Tên"
-                    value={formData.name}
-                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                    className="bg-white/80 border-gray-300 text-gray-800"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                
-                <div>
-                  <Input
-                    placeholder="Số điện thoại"
-                    value={formData.phone}
-                    onChange={(e) => setFormData({...formData, phone: e.target.value})}
-                    className="bg-white/80 border-gray-300 text-gray-800"
-                    required
-                    disabled={isSubmitting}
-                  />
-                </div>
-                
-                <div>
-                  <Textarea
-                    placeholder="Để lại lời nhắn cho chúng tôi"
-                    rows={4}
-                    value={formData.message}
-                    onChange={(e) => setFormData({...formData, message: e.target.value})}
-                    className="bg-white/80 border-gray-300 text-gray-800"
-                    disabled={isSubmitting}
-                  />
-                </div>
-                
-                <Button 
-                  type="submit" 
-                  className="w-full bg-black hover:bg-gray-800 text-white py-3 text-lg font-medium transition-all duration-300"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Đang gửi..." : "Đặt ngay"}
-                </Button>
-              </form>
+              <iframe 
+                src="https://forms.monday.com/forms/embed/d48d56918c56371755f73754afac7e37?r=use1" 
+                width="100%" 
+                height="500" 
+                style={{
+                  border: 0,
+                  boxShadow: "5px 5px 56px 0px rgba(0,0,0,0.25)",
+                  borderRadius: "8px"
+                }}
+                title="Contact Form"
+              />
             </div>
           </div>
         </div>
