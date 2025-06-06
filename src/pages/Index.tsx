@@ -1,9 +1,9 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 const Index = () => {
   const [formData, setFormData] = useState({
@@ -11,14 +11,47 @@ const Index = () => {
     phone: "",
     message: ""
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    toast({
-      title: "Cảm ơn bạn đã liên hệ",
-      description: "Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
-    });
-    setFormData({ name: "", phone: "", message: "" });
+    setIsSubmitting(true);
+
+    try {
+      const { error } = await supabase
+        .from('contacts')
+        .insert([
+          {
+            name: formData.name,
+            phone: formData.phone,
+            message: formData.message || null
+          }
+        ]);
+
+      if (error) {
+        console.error('Error submitting form:', error);
+        toast({
+          title: "Có lỗi xảy ra",
+          description: "Vui lòng thử lại sau hoặc liên hệ trực tiếp qua hotline.",
+          variant: "destructive"
+        });
+      } else {
+        toast({
+          title: "Cảm ơn bạn đã liên hệ",
+          description: "Chúng tôi sẽ phản hồi trong thời gian sớm nhất.",
+        });
+        setFormData({ name: "", phone: "", message: "" });
+      }
+    } catch (err) {
+      console.error('Unexpected error:', err);
+      toast({
+        title: "Có lỗi xảy ra",
+        description: "Vui lòng thử lại sau hoặc liên hệ trực tiếp qua hotline.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const features = [
@@ -208,6 +241,7 @@ const Index = () => {
                     onChange={(e) => setFormData({...formData, name: e.target.value})}
                     className="bg-white/80 border-gray-300 text-gray-800"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
                 
@@ -218,6 +252,7 @@ const Index = () => {
                     onChange={(e) => setFormData({...formData, phone: e.target.value})}
                     className="bg-white/80 border-gray-300 text-gray-800"
                     required
+                    disabled={isSubmitting}
                   />
                 </div>
                 
@@ -228,14 +263,16 @@ const Index = () => {
                     value={formData.message}
                     onChange={(e) => setFormData({...formData, message: e.target.value})}
                     className="bg-white/80 border-gray-300 text-gray-800"
+                    disabled={isSubmitting}
                   />
                 </div>
                 
                 <Button 
                   type="submit" 
                   className="w-full bg-black hover:bg-gray-800 text-white py-3 text-lg font-medium transition-all duration-300"
+                  disabled={isSubmitting}
                 >
-                  Đặt ngay
+                  {isSubmitting ? "Đang gửi..." : "Đặt ngay"}
                 </Button>
               </form>
             </div>
